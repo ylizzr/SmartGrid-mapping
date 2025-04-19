@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mapa de Dispositivos</title>
+</head>
+<body>
+    <h1>Estado de Dispositivos</h1>
+    <ul>
+        <li th:each="dispositivo : ${dispositivos}">
+            <span th:text="${dispositivo.nombre}"></span> -
+            <span th:text="${dispositivo.estado}"></span> -
+            <span th:text="${dispositivo.ubicacion}"></span>
+        </li>
+    </ul>
+</body>
+</html>
