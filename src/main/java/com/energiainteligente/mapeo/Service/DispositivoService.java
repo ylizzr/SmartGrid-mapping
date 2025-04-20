@@ -1,8 +1,9 @@
 
 package com.energiainteligente.mapeo.Service;
 
-import com.energiainteligente.mapeo.Model.Dispositivo;
-import com.energiainteligente.mapeo.Repository.DispositivoRepository;
+import com.energiainteligente.mapeo.Model.Repository.DispositivoRepository;
+import com.energiainteligente.mapeo.Model.entidad.Dispositivo;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

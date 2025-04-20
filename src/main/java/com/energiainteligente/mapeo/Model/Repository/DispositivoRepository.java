@@ -1,9 +1,10 @@
 
-package com.energiainteligente.mapeo.Repository;
+package com.energiainteligente.mapeo.Model.Repository;
 
-import com.energiainteligente.mapeo.Model.Dispositivo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.energiainteligente.mapeo.Model.entidad.Dispositivo;
 
 import java.util.UUID;
 

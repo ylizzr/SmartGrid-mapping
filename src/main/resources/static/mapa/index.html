@@ -1,34 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mapa de Dispositivos</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <title>Dispositivos en el Mapa</title>
+
+  <!-- Google Maps JS API con librerías necesarias -->
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvK0uSxahBem49TUFh29F4jptADT0I6GI&callback=initMap&libraries=maps,marker&v=beta">
+  </script>
+
   <style>
-    #map { height: 600px; width: 100%; }
+    gmp-map {
+      height: 100%;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
   </style>
 </head>
 <body>
-  <h2>Mapa de Estado de Dispositivos</h2>
-  <div id="map"></div>
+  <!-- Mapa de Google con un marcador inicial -->
+  <gmp-map id="map" center="4.716394901275635,-74.07353210449219" zoom="13" map-id="DEMO_MAP_ID">
+    <!-- Aquí se agregarán los marcadores dinámicamente -->
+  </gmp-map>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const map = L.map('map').setView([4.710989, -74.072090], 13); // Bogotá centro
+    async function initMap() {
+      const gmpMap = document.getElementById('map');
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+      try {
+        const response = await fetch('/api/dispositivos');
+        const dispositivos = await response.json();
 
-    fetch("/api/dispositivos")
-      .then(res => res.json())
-      .then(dispositivos => {
-        dispositivos.forEach(d => {
-          const [lat, lng] = d.ubicacion.split(',').map(Number);
-          L.marker([lat, lng])
-            .addTo(map)
-            .bindPopup(`<b>${d.nombre}</b><br>Estado: ${d.estado}`);
-        });
-      });
+        for (const disp of dispositivos) {
+          const geo = await geocodeUbicacion(disp.ubicacion);
+          if (geo) {
+            const marker = document.createElement('gmp-advanced-marker');
+            marker.setAttribute('position', `${geo.lat},${geo.lng}`);
+            marker.setAttribute('title', disp.nombre);
+            gmpMap.appendChild(marker);
+          }
+        }
+      } catch (error) {
+        console.error('Error cargando dispositivos:', error);
+      }
+    }
+
+    async function geocodeUbicacion(direccion) {
+      const apiKey = 'AIzaSyCvK0uSxahBem49TUFh29F4jptADT0I6GI';
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(direccion)}&key=${apiKey}`);
+      const data = await res.json();
+      if (data.results.length > 0) {
+        return data.results[0].geometry.location;
+      }
+      return null;
+    }
   </script>
 </body>
 </html>
+
