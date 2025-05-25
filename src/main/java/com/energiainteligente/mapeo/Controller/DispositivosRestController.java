@@ -19,10 +19,19 @@ public class DispositivosRestController {
         this.dispositivoService = dispositivoService;
     }
 
+
     @GetMapping
-    public ResponseEntity<List<Dispositivo>> obtenerDispositivos() {
-        return ResponseEntity.ok(dispositivoService.listarTodos());
+    public ResponseEntity<List<Dispositivo>> obtenerDispositivos(
+            @RequestParam(value = "search", required = false) String search) {
+        List<Dispositivo> dispositivos;
+        if (search != null && !search.trim().isEmpty()) {
+            dispositivos = dispositivoService.buscarPorNombre(search.trim());
+        } else {
+            dispositivos = dispositivoService.listarTodos();
+        }
+        return ResponseEntity.ok(dispositivos);
     }
+
 
     @PostMapping
     public ResponseEntity<Dispositivo> crearDispositivo(@RequestBody Dispositivo dispositivo) {

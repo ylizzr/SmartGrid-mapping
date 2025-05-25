@@ -12,4 +12,6 @@ public interface DispositivoRepository extends JpaRepository<Dispositivo, UUID> 
     boolean existsByNombre(String nombre);
     List<Dispositivo> findByEstado(Dispositivo.EstadoDispositivo estado);
     List<Dispositivo> findByTipoContainingIgnoreCase(String tipo);
+    List<Dispositivo> findByNombreContainingIgnoreCase(String nombre);
+
 }

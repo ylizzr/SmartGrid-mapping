@@ -22,6 +22,11 @@ public class DispositivoService {
         return dispositivoRepository.findAll();
     }
 
+    public List<Dispositivo> buscarPorNombre(String termino) {
+        return dispositivoRepository.findByNombreContainingIgnoreCase(termino);
+    }
+
+
     public Optional<Dispositivo> buscarPorId(UUID id) {
         if (id == null) {
             throw new DispositivoException("El ID del dispositivo no puede ser nulo");
