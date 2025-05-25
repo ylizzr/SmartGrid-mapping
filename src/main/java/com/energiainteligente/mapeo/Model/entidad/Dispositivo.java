@@ -2,7 +2,7 @@ package com.energiainteligente.mapeo.Model.entidad;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Entity
@@ -25,12 +25,19 @@ public class Dispositivo {
     @Column(nullable = false)
     private String ubicacion;
 
+    @Column(nullable = false)
+    private String coordenadas;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoDispositivo estado;
 
-    @Column(name = "fecha_instalacion", nullable = false)
-    private LocalDateTime fechaInstalacion;
+    @PrePersist
+    public void generateId() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
+    }
 
     public enum EstadoDispositivo {
         Activo,
@@ -38,4 +45,3 @@ public class Dispositivo {
         Mantenimiento
     }
 }
-

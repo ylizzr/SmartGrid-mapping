@@ -19,8 +19,9 @@ public class MapaController {
     public String mostrarMapa(Model model) {
         List<Dispositivo> dispositivos = dispositivoRepository.findAll();
         model.addAttribute("dispositivos", dispositivos);
-        return "index"; // nombre de tu archivo HTML (index.html en templates)
+        return "mapa";
     }
+
 }
 
 

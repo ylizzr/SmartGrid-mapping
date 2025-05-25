@@ -1,13 +1,15 @@
 
 package com.energiainteligente.mapeo.Model.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import com.energiainteligente.mapeo.Model.entidad.Dispositivo;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
-@Repository
 public interface DispositivoRepository extends JpaRepository<Dispositivo, UUID> {
+    boolean existsByNombre(String nombre);
+    List<Dispositivo> findByEstado(Dispositivo.EstadoDispositivo estado);
+    List<Dispositivo> findByTipoContainingIgnoreCase(String tipo);
 }

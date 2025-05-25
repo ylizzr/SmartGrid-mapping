@@ -2,22 +2,58 @@ package com.energiainteligente.mapeo.Controller;
 
 import com.energiainteligente.mapeo.Model.entidad.Dispositivo;
 import com.energiainteligente.mapeo.Service.DispositivoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/dispositivos")
 public class DispositivosRestController {
-    
-    @Autowired
-    private DispositivoService dispositivoService;
-    
-    @GetMapping("/dispositivos")
-    public List<Dispositivo> obtenerDispositivos() {
-        return dispositivoService.listarTodos();
+
+    private final DispositivoService dispositivoService;
+
+    public DispositivosRestController(DispositivoService dispositivoService) {
+        this.dispositivoService = dispositivoService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Dispositivo>> obtenerDispositivos() {
+        return ResponseEntity.ok(dispositivoService.listarTodos());
+    }
+
+    @PostMapping
+    public ResponseEntity<Dispositivo> crearDispositivo(@RequestBody Dispositivo dispositivo) {
+        if (dispositivo.getId() == null) {
+            dispositivo.setId(UUID.randomUUID());
+        }
+        Dispositivo nuevo = dispositivoService.guardar(dispositivo);
+        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Dispositivo> obtenerPorId(@PathVariable UUID id) {
+        return dispositivoService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Dispositivo> actualizarDispositivo(
+            @PathVariable UUID id,
+            @RequestBody Dispositivo dispositivo) {
+        return dispositivoService.actualizar(id, dispositivo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarDispositivo(@PathVariable UUID id) {
+        if (dispositivoService.eliminar(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
